@@ -51,7 +51,7 @@ export default class StopWatch extends React.Component {
   }
 
   componentDidUpdate = () => {
-    setTimeout(() => {
+    const interval = setTimeout(() => {
       if (this.state.running) {
         const diff = parseInt((Date.now() - this.state.start) / 1000);
         this.setState({
@@ -62,6 +62,9 @@ export default class StopWatch extends React.Component {
           },
           diff
         })
+      } else { 
+        clearInterval(interval); 
+        console.log('interval cleared') 
       }
     }, 1000)
   }
