@@ -71,10 +71,10 @@ export default class StopWatch extends React.Component {
 
   render () {
     return (
-      <>
+      <div> 
         <div className="stopwatch">{this.formatTime()}</div>
-        <Controls handleStart={this.handleStart} handlePause={this.handlePause} handleStop={this.handleStop}></Controls>
-      </>
+        <Controls isRunning={this.state.running} handleStart={this.handleStart} handlePause={this.handlePause} handleStop={this.handleStop}></Controls>
+      </div>
     )
   }
 }
