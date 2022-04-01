@@ -18,8 +18,7 @@ export default class StopWatch extends React.Component {
     }
   }
 
-  formatTime = () => {
-    const { hours, minutes, seconds } = this.state.time;
+  formatTime = ({ hours, minutes, seconds }) => {
     return `${String(hours).padStart(2, 0)} : ${String(minutes).padStart(2, 0)} : ${String(seconds).padStart(2, 0)}`
   }
 
@@ -40,31 +39,31 @@ export default class StopWatch extends React.Component {
   handleStop = () => {
     this.setState({
       running: false,
-      time: {
-        hours: 0,
-        minutes: 0,
-        seconds: 0
-      },
+      time: this.calculateTime(0),
       start: 0,
       pauseTime: 0,
     })
+  }
+
+  calculateTime = (ms) => {
+    return {
+      seconds: ms % 60,
+      minutes: parseInt((ms % 3600) / 60),
+      hours: parseInt(ms / 3600)
+    }
   }
 
   componentDidUpdate = () => {
     const interval = setTimeout(() => {
       if (this.state.running) {
         const diff = parseInt((Date.now() - this.state.start) / 1000);
+        const time = this.calculateTime(diff);
         this.setState({
-          time: {
-            seconds: diff % 60,
-            minutes: parseInt((diff % 3600) / 60),
-            hours: parseInt(diff / 3600)
-          },
+          time,
           diff
         })
       } else { 
         clearInterval(interval); 
-        console.log('interval cleared') 
       }
     }, 1000)
   }
@@ -72,8 +71,8 @@ export default class StopWatch extends React.Component {
   render () {
     return (
       <div> 
-        <div className="stopwatch">{this.formatTime()}</div>
-        <Controls isRunning={this.state.running} handleStart={this.handleStart} handlePause={this.handlePause} handleStop={this.handleStop}></Controls>
+        <div className="stopwatch">{this.formatTime(this.state.time)}</div>
+        <Controls play={true} isRunning={this.state.running} handleStart={this.handleStart} handlePause={this.handlePause} handleStop={this.handleStop}></Controls>
       </div>
     )
   }
