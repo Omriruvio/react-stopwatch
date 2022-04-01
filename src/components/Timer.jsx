@@ -12,6 +12,8 @@ export default class Timer extends StopWatch {
       remaining: 0,
     }
     this.timerInputField = React.createRef();
+    this.submitButtonActiveClasses = 'btn btn-info ms-1';
+    this.submitButtonInactiveClasses = 'btn btn-outline-secondary ms-1';
   }
 
   setTime = (e) => { 
@@ -39,11 +41,13 @@ export default class Timer extends StopWatch {
       setTimeout(() => {
         this.setState({
           timer: --this.state.timer,
-          time: this.calculateTime(this.state.timer)
-          
+          time: this.calculateTime(this.state.timer),
+          running: this.state.timer > 0
         })
       }, 1000)
+      // if (this.state.running && this.state.timer <= 0) this.setState({running: false});
     }
+    
 
 
   }
@@ -54,9 +58,9 @@ export default class Timer extends StopWatch {
         <div className="stopwatch">{this.formatTime(this.state.time)}</div>
           <div>
             <div className="input-group input-group-sm mt-3 mb-3">
-              <input ref={this.timerInputField} onKeyUp={this.setTime} type="number" className="form-control" placeholder="Set time" />
+              <input disabled={this.state.running} readOnly={this.state.running} ref={this.timerInputField} onKeyUp={this.setTime} type="number" className="form-control" placeholder="Set time" />
               <div className="input-group-append">
-                <button onClick={this.startTimer} className="btn btn-info ms-1" type="button">Start!</button>
+                <button disabled={this.state.running} onClick={this.startTimer} className={this.state.running ? this.submitButtonInactiveClasses : this.submitButtonActiveClasses} type="button">Start!</button>
               </div>
           </div>
           <Controls play={false} isRunning={this.state.running}></Controls>

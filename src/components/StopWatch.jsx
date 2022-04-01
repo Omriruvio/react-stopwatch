@@ -19,7 +19,11 @@ export default class StopWatch extends React.Component {
   }
 
   formatTime = ({ hours, minutes, seconds }) => {
-    return `${String(hours).padStart(2, 0)} : ${String(minutes).padStart(2, 0)} : ${String(seconds).padStart(2, 0)}`
+    const delimiter = ' : ';
+    hours = String(hours <= 0 ? 0 : hours).padStart(2, 0);
+    minutes = String(minutes <= 0 ? 0 : minutes).padStart(2, 0);
+    seconds = String(seconds <= 0 ? 0 : seconds).padStart(2, 0);
+    return `${hours}${delimiter}${minutes}${delimiter}${seconds}`
   }
 
   handleStart = () => {
