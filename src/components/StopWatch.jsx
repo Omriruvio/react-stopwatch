@@ -14,7 +14,8 @@ export default class StopWatch extends React.Component {
       start: 0,
       pauseTime: 0,
       running: false,
-      diff: 0
+      diff: 0,
+      isPaused: false
     }
   }
 
@@ -30,19 +31,25 @@ export default class StopWatch extends React.Component {
     const now = Date.now();
     this.setState({
       running: true,
+      isPaused: false,
       start: this.state.pauseTime ? now - (this.state.pauseTime * 1000 ) : now,
       
     })
   }
   handlePause = () => {
+    console.log('pausing from stopwatch')
+    const now = Date.now();
     this.setState({
-      running: false,
+      running: !this.state.running,
+      isPaused: !this.state.isPaused,
       pauseTime: (Date.now() - this.state.start) / 1000,
+      start: this.state.pauseTime ? now - (this.state.pauseTime * 1000 ) : now
     })
   }
   handleStop = () => {
     this.setState({
       running: false,
+      isPaused: false,
       time: this.calculateTime(0),
       start: 0,
       pauseTime: 0,
@@ -76,7 +83,7 @@ export default class StopWatch extends React.Component {
     return (
       <div> 
         <div className="stopwatch">{this.formatTime(this.state.time)}</div>
-        <Controls play={true} isRunning={this.state.running} handleStart={this.handleStart} handlePause={this.handlePause} handleStop={this.handleStop}></Controls>
+        <Controls isPaused={this.state.isPaused} displayPlayButton={true} isRunning={this.state.running} handleStart={this.handleStart} onPause={this.handlePause} handleStop={this.handleStop}></Controls>
       </div>
     )
   }

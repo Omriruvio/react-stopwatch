@@ -5,7 +5,7 @@ function App() {
   return (
     <div className="page-content">
       <Timer></Timer>
-      {/* <StopWatch></StopWatch> */}
+      <StopWatch></StopWatch>
     </div>
   );
 }
