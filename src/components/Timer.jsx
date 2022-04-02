@@ -1,6 +1,7 @@
 import StopWatch from "./StopWatch";
 import React from "react";
 import Controls from "./Controls";
+import parseTime from "../utils/parsetime.js";
 
 export default class Timer extends StopWatch {
   constructor(props) {
@@ -20,28 +21,26 @@ export default class Timer extends StopWatch {
   handleKeyUp = (e) => { 
     if (e.key === 'Enter') {
       this.startTimer()
-      this.timerInputField.current.value = ''
     } else {
-      this.setState({
-        time: this.calculateTime(this.timerInputField.current.value)
-      })
+      parseTime(this.timerInputField.current.value).then(seconds => {
+        const time = this.calculateTime(seconds);
+        const { hours, minutes, secs } = time;
+        this.setState({ time })
+        // this.setState({ time : { hours: hours || 0, minutes: minutes || 0, seconds: secs || 0 } })
+      }).catch(err => console.log(err))
     }
   }
 
   startTimer = () => {
-    // parse value --- if value is string and not empty -> 
-    // handle white spaces
-    // handle Number space hour / hr / h / hours / hrs / minute / minutes / min / m / mins / seconds / second / secs / s /sec ->
-    // handle 'XtimesizeYtimesizeZtimesize...'
-    // convert to seconds and pass into "timer state"
-    // return a converted Number in seconds
-    // const timer = this.parseInput() 
-    const timer = Number(this.timerInputField.current.value);
-    const time = this.calculateTime(timer);
-    if (timer !== '') {
-      console.log(`time set for ${timer} seconds`);
-      this.setState({ time, timer, running: true, isPaused: false})
-    }
+    parseTime(this.timerInputField.current.value).then(timer => {
+      // console.log(`time set for ${timer} seconds`, typeof timer);
+      
+      this.timerInputField.current.value = '';
+      const time = this.calculateTime(timer);
+      if (timer !== '') {
+        this.setState({ time, timer, running: true, isPaused: false})
+      }
+    }).catch(err => console.log(err))
   }
 
   handlePause = () => {
@@ -81,7 +80,7 @@ export default class Timer extends StopWatch {
         <div className="stopwatch">{this.formatTime(this.state.time)}</div>
           <div>
             <div className="input-group input-group-sm mt-3 mb-3">
-              <input disabled={this.state.running} readOnly={this.state.running} ref={this.timerInputField} onKeyUp={this.handleKeyUp} type="number" className="form-control" placeholder="Set time" />
+              <input disabled={this.state.running} readOnly={this.state.running} ref={this.timerInputField} onKeyUp={this.handleKeyUp} type="text" className="form-control" placeholder="Set time" />
               <div className="input-group-append">
                 <button disabled={this.state.running || this.state.isPaused} onClick={this.startTimer} className={this.state.running || this.state.isPaused ? this.submitButtonInactiveClasses : this.submitButtonActiveClasses} type="button">Start!</button>
               </div>
