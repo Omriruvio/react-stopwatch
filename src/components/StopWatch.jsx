@@ -24,7 +24,8 @@ export default class StopWatch extends React.Component {
     hours = String(hours <= 0 || Number.isNaN(hours) ? 0 : hours).padStart(2, 0);
     minutes = String(minutes <= 0 || Number.isNaN(minutes)? 0 : minutes).padStart(2, 0);
     seconds = String(seconds <= 0 || Number.isNaN(seconds)? 0 : seconds).padStart(2, 0);
-    return `${hours}${delimiter}${minutes}${delimiter}${seconds}`
+    // return `${hours}${delimiter}${minutes}${delimiter}${seconds}`
+    return ( <><span>{hours}</span>{delimiter}<span>{minutes}</span>{delimiter}<span>{seconds}</span></> )
   }
 
   handleStart = () => {

@@ -2,6 +2,7 @@ import StopWatch from "./StopWatch";
 import React from "react";
 import Controls from "./Controls";
 import parseTime from "../utils/parsetime.js";
+import TimeDisPlay from "./TimeDisplay";
 
 export default class Timer extends StopWatch {
   constructor(props) {
@@ -33,12 +34,18 @@ export default class Timer extends StopWatch {
 
   startTimer = () => {
     parseTime(this.timerInputField.current.value).then(timer => {
-      // console.log(`time set for ${timer} seconds`, typeof timer);
-      
-      this.timerInputField.current.value = '';
-      const time = this.calculateTime(timer);
-      if (timer !== '') {
-        this.setState({ time, timer, running: true, isPaused: false})
+      if (timer.name === "Error") {
+        console.log('Could not submit timer, incorrect input.')
+      } else if (timer > 0) {
+        console.log(`time set for ${timer} seconds`);
+        
+        this.timerInputField.current.value = '';
+        const time = this.calculateTime(timer);
+        if (timer !== '') {
+          this.setState({ time, timer, running: true, isPaused: false})
+        }
+      } else {
+        console.log('Could not submit timer, incorrect input.')
       }
     }).catch(err => console.log(err))
   }
@@ -77,7 +84,7 @@ export default class Timer extends StopWatch {
   render() {
     return (
       <div>
-        <div className="stopwatch">{this.formatTime(this.state.time)}</div>
+        <div className="stopwatch"><TimeDisPlay time={this.state.time}></TimeDisPlay></div>
           <div>
             <div className="input-group input-group-sm mt-3 mb-3">
               <input disabled={this.state.running} readOnly={this.state.running} ref={this.timerInputField} onKeyUp={this.handleKeyUp} type="text" className="form-control" placeholder="Set time" />

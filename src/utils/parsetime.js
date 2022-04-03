@@ -21,17 +21,24 @@ export default function parseTime(str) {
       const cache = [];
       let totalSeconds = 0;
       arr.forEach((x) => {
+        let typeWasFound = false;
         if (!Number.isNaN(parseInt(x, 10))) {
           // if item is a number push to cache
           cache.push(x);
+          typeWasFound = true;
         } else {
           // if item is a word, get the convertion, multiply by last element of cache and add to total
           for (const [duration, timeType] of Object.entries(timeTypes)) {
             if (timeType.includes(x)) {
               totalSeconds += Number(duration * cache[0]);
               cache.pop();
+              typeWasFound = true;
             }
           }
+        }
+        if (!typeWasFound) {
+          cache.pop();
+          console.log('Warning: incorrect input detected.');
         }
       });
       return totalSeconds;
