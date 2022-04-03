@@ -1,5 +1,6 @@
 import React from "react"
 import Controls from "./Controls"
+import TimeDisPlay from "./TimeDisplay"
 
 export default class StopWatch extends React.Component {
   constructor(props) {
@@ -19,15 +20,6 @@ export default class StopWatch extends React.Component {
     }
   }
 
-  formatTime = ({ hours, minutes, seconds }) => {
-    const delimiter = ' : ';
-    hours = String(hours <= 0 || Number.isNaN(hours) ? 0 : hours).padStart(2, 0);
-    minutes = String(minutes <= 0 || Number.isNaN(minutes)? 0 : minutes).padStart(2, 0);
-    seconds = String(seconds <= 0 || Number.isNaN(seconds)? 0 : seconds).padStart(2, 0);
-    // return `${hours}${delimiter}${minutes}${delimiter}${seconds}`
-    return ( <><span>{hours}</span>{delimiter}<span>{minutes}</span>{delimiter}<span>{seconds}</span></> )
-  }
-
   handleStart = () => {
     const now = Date.now();
     this.setState({
@@ -37,6 +29,7 @@ export default class StopWatch extends React.Component {
       
     })
   }
+  
   handlePause = () => {
     console.log('pausing from stopwatch')
     const now = Date.now();
@@ -81,10 +74,21 @@ export default class StopWatch extends React.Component {
   }
 
   render () {
+    const controlsProps = {
+      isPaused: this.state.isPaused,
+      displayPlayButton: true,
+      isRunning: this.state.running,
+      handleStart: this.handleStart,
+      onPause: this.handlePause,
+      handleStop: this.handleStop
+    }
+    
     return (
       <div> 
-        <div className="stopwatch">{this.formatTime(this.state.time)}</div>
-        <Controls isPaused={this.state.isPaused} displayPlayButton={true} isRunning={this.state.running} handleStart={this.handleStart} onPause={this.handlePause} handleStop={this.handleStop}></Controls>
+        <div className="stopwatch">
+          <TimeDisPlay time={this.state.time} />
+        </div>
+        <Controls {...controlsProps}></Controls>
       </div>
     )
   }

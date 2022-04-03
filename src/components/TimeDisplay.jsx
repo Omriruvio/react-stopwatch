@@ -1,20 +1,24 @@
 import React from "react";
 
-export default class TimeDisPlay extends React.Element {
+export default class TimeDisPlay extends React.Component {
   constructor(props) {
     super(props);
     this.delimiter = props.delimiter || ' : ';
-    this.hours = String(props.hours <= 0 || Number.isNaN(props.hours) ? 0 : props.hours).padStart(2, 0);
-    this.minutes = String(props.minutes <= 0 || Number.isNaN(props.minutes)? 0 : props.minutes).padStart(2, 0);
-    this.seconds = props.seconds = String(props.seconds <= 0 || Number.isNaN(props.seconds)? 0 : props.seconds).padStart(2, 0);
-    console.log(this.hours, this.minutes, this.seconds, this.delimiter);
-    
+  }
+
+  formatTime = ({ hours, minutes, seconds }) => {
+    const delimiter = ' : ';
+    hours = String(hours <= 0 || Number.isNaN(hours) ? 0 : hours).padStart(2, 0);
+    minutes = String(minutes <= 0 || Number.isNaN(minutes)? 0 : minutes).padStart(2, 0);
+    seconds = String(seconds <= 0 || Number.isNaN(seconds)? 0 : seconds).padStart(2, 0);
+    return ( <><span>{hours}</span>{delimiter}<span>{minutes}</span>{delimiter}<span>{seconds}</span></> )
   }
 
   render () {
+    const {hours, minutes, seconds} = this.props.time;
     return ( 
       <>
-      <span>{this.hours}</span>{this.delimiter}<span>{this.minutes}</span>{this.delimiter}<span>{this.seconds}</span>
+        {this.formatTime({ hours, minutes, seconds })}
       </> 
     )}
 }

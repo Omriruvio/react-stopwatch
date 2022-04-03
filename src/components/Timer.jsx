@@ -1,10 +1,9 @@
-import StopWatch from "./StopWatch";
 import React from "react";
 import Controls from "./Controls";
 import parseTime from "../utils/parsetime.js";
 import TimeDisPlay from "./TimeDisplay";
 
-export default class Timer extends StopWatch {
+export default class Timer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -19,15 +18,21 @@ export default class Timer extends StopWatch {
     this.submitButtonInactiveClasses = 'btn btn-outline-secondary ms-1';
   }
 
+  calculateTime = (ms) => {
+    return {
+      seconds: ms % 60,
+      minutes: parseInt((ms % 3600) / 60),
+      hours: parseInt(ms / 3600)
+    }
+  }
+
   handleKeyUp = (e) => { 
     if (e.key === 'Enter') {
       this.startTimer()
     } else {
       parseTime(this.timerInputField.current.value).then(seconds => {
         const time = this.calculateTime(seconds);
-        const { hours, minutes, secs } = time;
         this.setState({ time })
-        // this.setState({ time : { hours: hours || 0, minutes: minutes || 0, seconds: secs || 0 } })
       }).catch(err => console.log(err))
     }
   }
@@ -58,7 +63,7 @@ export default class Timer extends StopWatch {
     })
   }
 
-  componentDidUpdate = (prevProps, prevState) => { 
+  componentDidUpdate = (props, prevState) => { 
     if (this.state.running && this.state.timer > 0) {
       setTimeout(() => {
         this.setState({

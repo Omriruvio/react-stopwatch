@@ -38,7 +38,7 @@ export default function parseTime(str) {
         }
         if (!typeWasFound) {
           cache.pop();
-          console.log('Warning: incorrect input detected.');
+          // console.log('Warning: incorrect input detected.');
         }
       });
       return totalSeconds;
