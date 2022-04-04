@@ -12,6 +12,7 @@ export default class Timer extends React.Component {
       time: this.calculateTime(0),
       timer: null,
       remaining: 0,
+      cancelled: false
     }
     this.timerInputField = React.createRef();
     this.submitButtonActiveClasses = 'btn btn-info ms-1';
@@ -21,11 +22,11 @@ export default class Timer extends React.Component {
     this.notificationSound.volume = 0.2;
   }
 
-  calculateTime = (ms) => {
+  calculateTime = (sec) => {
     return {
-      seconds: ms % 60,
-      minutes: parseInt((ms % 3600) / 60),
-      hours: parseInt(ms / 3600)
+      seconds: sec % 60,
+      minutes: parseInt((sec % 3600) / 60),
+      hours: parseInt(sec / 3600)
     }
   }
 
@@ -35,31 +36,39 @@ export default class Timer extends React.Component {
     } else {
       parseTime(this.timerInputField.current.value).then(seconds => {
         const time = this.calculateTime(seconds);
-        this.setState({ time })
+        this.setState({ time, timer: seconds })
       }).catch(err => console.log(err))
     }
   }
 
   startTimer = () => {
     parseTime(this.timerInputField.current.value).then(timer => {
-      if (timer.name === "Error") {
-        console.log('Could not submit timer, incorrect input.')
-      } else if (timer > 0) {
+      if (timer > 0) {
         console.log(`time set for ${timer} seconds`);
-        
         this.timerInputField.current.value = '';
-        const time = this.calculateTime(timer);
         if (timer !== '') {
-          this.setState({ time, timer, running: true, isPaused: false})
+          this.setState({ running: true, isPaused: false, cancelled: false})
         }
+        this.interval = setInterval(this.countDown, 1000);
       } else {
-        console.log('Could not submit timer, incorrect input.')
+        console.log('Could not submit timer, incorrect input.');
+        this.handleStop();
       }
     }).catch(err => console.log(err))
   }
 
+  countDown = () => {
+    if (this.state.running && this.state.timer >= 0) {
+      const newTimer = this.state.timer - 1;
+      this.setState({
+        timer: newTimer,
+        time: this.calculateTime(this.state.timer),
+        running: this.state.running && this.state.timer > 0
+      })
+    } else if (!this.state.running && this.state.timer <= 0) clearInterval(this.interval);
+  }
+
   handlePause = () => {
-    // super?
     this.setState({
       running: !this.state.running,
       isPaused: !this.state.isPaused
@@ -67,16 +76,11 @@ export default class Timer extends React.Component {
   }
 
   componentDidUpdate = (props, prevState) => { 
-    if (this.state.running && this.state.timer > 0) {
-      setTimeout(() => {
-        this.setState({
-          timer: --this.state.timer,
-          time: this.calculateTime(this.state.timer),
-          running: this.state.running && this.state.timer > 0
-        })
-      }, 1000)
-    }
-    if (prevState.running && !this.state.running) this.notificationSound.play();
+    prevState.running && 
+    !this.state.running && 
+    !this.state.cancelled && 
+    !this.state.isPaused &&
+    this.notificationSound.play();
   }
 
   handleStop = () => {
@@ -87,6 +91,7 @@ export default class Timer extends React.Component {
       timer: 0,
       start: 0,
       pauseTime: 0,
+      cancelled: true
     })
   }
 
