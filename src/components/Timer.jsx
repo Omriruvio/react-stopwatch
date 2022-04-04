@@ -16,6 +16,9 @@ export default class Timer extends React.Component {
     this.timerInputField = React.createRef();
     this.submitButtonActiveClasses = 'btn btn-info ms-1';
     this.submitButtonInactiveClasses = 'btn btn-outline-secondary ms-1';
+    const audioUrl = new URL("../media/mixkit-happy-bells-notification-937.wav", import.meta.url)
+    this.notificationSound = new Audio(audioUrl);
+    this.notificationSound.volume = 0.2;
   }
 
   calculateTime = (ms) => {
@@ -73,6 +76,7 @@ export default class Timer extends React.Component {
         })
       }, 1000)
     }
+    if (prevState.running && !this.state.running) this.notificationSound.play();
   }
 
   handleStop = () => {
