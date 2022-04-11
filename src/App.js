@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Selector from './components/Selector';
 import StopWatch from './components/StopWatch';
 import Timer from './components/Timer';
 
@@ -7,15 +8,7 @@ function App() {
     <div className="page-content">
       <BrowserRouter>
         <Routes>
-          <Route
-            path="/"
-            element={
-              <>
-                <Timer />
-                <StopWatch />
-              </>
-            }
-          ></Route>
+          <Route path="/" element={<Selector />} />
           <Route path="/stopwatch" element={<StopWatch />}></Route>
           <Route path="/timer" element={<Timer />} />
         </Routes>
